@@ -10,6 +10,7 @@ class AES:
         self.key = None
         self.iv = None
 
+        #If secrets not passed to AES object, get secrets from secrets file
         if secrets == None:
             self.set_secrets(secrets_path=secrets_path)
         else:
@@ -17,8 +18,10 @@ class AES:
             self.iv = secrets['iv']
 
 
+    #Obtain secrets from secrets file
     def get_secrets(self, path):
         with open(path, 'r') as file:
+            #Extract each secret line-by-line
             contents = file.readlines()
             secrets = {
                 "key": ast.literal_eval(contents[0].strip()),
@@ -78,7 +81,9 @@ class AES:
         return decrypted_data.decode('utf-8')
     
 
+    #Set secrets of AES
     def set_secrets(self, secrets = None, secrets_path=""):
+        #If secrets not passed to function, get secrets from secrets file
         if secrets == None:
             secrets = self.get_secrets(secrets_path)
             self.key = secrets['key'].ljust(32, b'\0')  # Pad the key with zeros to make it 32 bytes

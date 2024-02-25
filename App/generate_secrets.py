@@ -3,7 +3,7 @@ import sys
 import random
 import string
 
-DELIMITER_LENGTH = 6
+DELIMITER_LENGTH = 6    #Statically assigned delimter length
 
 def generate_aes_key():
     return secrets.token_bytes(32) #generate a random key (32 bytes for AES)
@@ -11,19 +11,23 @@ def generate_aes_key():
 def generate_random_iv():
     return secrets.token_bytes(16)  #generate a random initialization vector (16 bytes for AES)
 
+#Generate random delimters to mark the start and end of encoded messages used in steganography
 def generate_random_delimiters(length):
     chars = []
-    for i in range(length*2):
-        chars.append(random.choice(string.ascii_letters + string.digits + string.punctuation))
+    for i in range(length*2):   #twice the length because 2 delimiters
+        chars.append(random.choice(string.ascii_letters + string.digits + string.punctuation))  #Append random ascii character
+    #Split the list of characters into start and end delimiters
     start_delimiter = ''.join(chars[:length])
     end_delimiter = ''.join(chars[length:])
     return (start_delimiter, end_delimiter)
 
 
+#Generate secrets file
 if len(sys.argv) == 1:
-    PATH = "secrets.txt"
+    PATH = "secrets.txt"    #Default filename is not argument passed
 else:
-    PATH = str(sys.argv[1])
+    PATH = str(sys.argv[1]) #filename passed as argument by user
+#Write contents to secrets file
 with open(PATH, "w+") as file:
     file.write(f"{str(generate_aes_key())}\n")
     file.write(f"{str(generate_random_iv())}\n")
