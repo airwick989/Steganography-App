@@ -1,14 +1,14 @@
 import ast
 from AES import AES
+from PIL import Image
+
 
 class AES_Steg:
     def __init__(self, secrets_path):
         self.aes_key = None
         self.aes_iv = None
         self.delimiter = None
-
         self.set_secrets(secrets_path)
-
         aes_secrets = {
             "key": self.aes_key,
             "iv": self.aes_iv
@@ -35,11 +35,29 @@ class AES_Steg:
         self.delimiter = secrets['secret_delimiter']
 
 
+    def encrypt(self, plaintext):
+        cipher = self.aes.encrypt(plaintext)
+        return cipher
+    
+
+    def decrypt(self, cipher):
+        plaintext = self.aes.encrypt(cipher)
+        return plaintext
 
 
+    pass
+
+
+
+
+# plaintext = "Hello there, don't mind if I do! I will certainly eat your croissant :)"
 steg = AES_Steg("secrets.txt")
-plaintext = "Hello there, don't mind if I do! I will certainly eat your croissant :)"
-encrypted_text = steg.aes.encrypt(plaintext)
-print(f"Encrypted: {encrypted_text}")
-decrypted_text = steg.aes.decrypt(encrypted_text)
-print(f"Decrypted: {decrypted_text}")
+# print(steg.encrypt(plaintext))
+# steg.embed("image.png", plaintext, "encoded_image.png")
+steg.extract("encoded_image.png")
+
+
+# encrypted_text = steg.aes.encrypt(plaintext)
+# print(f"Encrypted: {encrypted_text}")
+# decrypted_text = steg.aes.decrypt(encrypted_text)
+# print(f"Decrypted: {decrypted_text}")

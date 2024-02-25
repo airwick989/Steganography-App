@@ -11,11 +11,13 @@ def generate_aes_key():
 def generate_random_iv():
     return secrets.token_bytes(16)  #generate a random initialization vector (16 bytes for AES)
 
-def generate_random_delimiter(length):
+def generate_random_delimiters(length):
     chars = []
-    for i in range(length):
+    for i in range(length*2):
         chars.append(random.choice(string.ascii_letters + string.digits + string.punctuation))
-    return ''.join(chars)
+    start_delimiter = ''.join(chars[:length])
+    end_delimiter = ''.join(chars[length:])
+    return (start_delimiter, end_delimiter)
 
 
 if len(sys.argv) == 1:
@@ -25,4 +27,7 @@ else:
 with open(PATH, "w+") as file:
     file.write(f"{str(generate_aes_key())}\n")
     file.write(f"{str(generate_random_iv())}\n")
-    file.write(generate_random_delimiter(DELIMITER_LENGTH))
+
+    delimiters = generate_random_delimiters(DELIMITER_LENGTH)
+    file.write(f"{delimiters[0]}\n")
+    file.write(delimiters[1])
