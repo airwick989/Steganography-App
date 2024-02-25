@@ -1,2 +1,1 @@
-- Convert AES stuff to class
 - Implement AES stuff to steganography stuff (look at LSB steganography and the pdf [first link in resources google doc])

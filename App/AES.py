@@ -6,10 +6,15 @@ import ast
 
 
 class AES:
-    def __init__(self, secrets_path):
+    def __init__(self, secrets= None, secrets_path=""):
         self.key = None
         self.iv = None
-        self.set_secrets(secrets_path)
+
+        if secrets == None:
+            self.set_secrets(secrets_path=secrets_path)
+        else:
+            self.key = secrets['key']
+            self.iv = secrets['iv']
 
 
     def get_secrets(self, path):
@@ -73,16 +78,20 @@ class AES:
         return decrypted_data.decode('utf-8')
     
 
-    def set_secrets(self, secrets_path):
-        secrets = self.get_secrets(secrets_path)
-        self.key = secrets['key'].ljust(32, b'\0')  # Pad the key with zeros to make it 32 bytes
-        self.iv = secrets['iv']
+    def set_secrets(self, secrets = None, secrets_path=""):
+        if secrets == None:
+            secrets = self.get_secrets(secrets_path)
+            self.key = secrets['key'].ljust(32, b'\0')  # Pad the key with zeros to make it 32 bytes
+            self.iv = secrets['iv']
+        else:
+            self.key = secrets['key']
+            self.iv = secrets['iv']
     
 
 
 
 # #Example usage
-# aes = AES("secrets.txt")
+# aes = AES(secrets_path="aes_secrets.txt")
 # plaintext = "Hello there, don't mind if I do! I will certainly eat your croissant :)"
 # encrypted_text = aes.encrypt(plaintext)
 # print(f"Encrypted: {encrypted_text}")
