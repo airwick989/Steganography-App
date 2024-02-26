@@ -5,15 +5,15 @@ import bcrypt
 conn = sqlite3.connect('../Flask-Server/user_credentials.db')
 cursor = conn.cursor()
 
-# Create table if it doesn't already exist
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        username TEXT PRIMARY KEY,
-        hashed_password TEXT,
-        salt TEXT
-    )
-''')
-conn.commit()
+# # Create table if it doesn't already exist
+# cursor.execute('''
+#     CREATE TABLE IF NOT EXISTS users (
+#         username TEXT PRIMARY KEY,
+#         hashed_password TEXT,
+#         salt TEXT
+#     )
+# ''')
+# conn.commit()
 
 
 """
