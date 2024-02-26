@@ -2,7 +2,7 @@ import sqlite3
 import bcrypt
 
 # Connect to db
-conn = sqlite3.connect('../Flask-Server/user_credentials.db')
+conn = sqlite3.connect('user_data.db')
 cursor = conn.cursor()
 
 

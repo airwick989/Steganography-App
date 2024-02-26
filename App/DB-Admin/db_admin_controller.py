@@ -2,7 +2,7 @@ import sqlite3
 import bcrypt
 
 # Connect to db
-conn = sqlite3.connect('../Flask-Server/user_credentials.db')
+conn = sqlite3.connect('../Comm-Server/user_data.db')
 cursor = conn.cursor()
 
 # # Create table if it doesn't already exist
@@ -11,6 +11,18 @@ cursor = conn.cursor()
 #         username TEXT PRIMARY KEY,
 #         hashed_password TEXT,
 #         salt TEXT
+#     )
+# ''')
+# conn.commit()
+
+# Create a table to store user images
+# cursor.execute('''
+#     CREATE TABLE IF NOT EXISTS user_images (
+#         id INTEGER PRIMARY KEY AUTOINCREMENT,
+#         username TEXT,
+#         filename TEXT,
+#         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,      
+#         FOREIGN KEY (username) REFERENCES users(username)
 #     )
 # ''')
 # conn.commit()
