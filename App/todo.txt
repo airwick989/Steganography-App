@@ -1,1 +1,7 @@
 - D:\Desktop\GitHub\Steganography-App\App\venv\lib\site-packages\flask_uploads\flask_uploads.py
+- ChatGPT reference for flask app: Secure Flask Server File Transfer
+- ChatGPT reference for AES-Steganography: Python DES Encryption
+- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- Add functionality in AES-Steganography that checks if image is large enough to store the desired message (has enough pixels)
+- Make steg server with functionalities to take input text, secrets file, and image and ...
+uploads an encoded image (name is exact timestamp.png or .jeg) to the Comm-Server (store it in a folder called uploads?)
