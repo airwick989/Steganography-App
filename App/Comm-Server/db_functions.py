@@ -2,7 +2,7 @@ import sqlite3
 import bcrypt
 
 # Connect to db
-conn = sqlite3.connect('user_data.db')
+conn = sqlite3.connect('user_data.db', check_same_thread=False)
 cursor = conn.cursor()
 
 

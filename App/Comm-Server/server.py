@@ -4,7 +4,6 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
-import sqlite3
 from db_functions import validate_creds
 
 app = Flask(__name__)
@@ -16,10 +15,6 @@ app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/uploads/'
 jwt = JWTManager(app)
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
-
-# Connect to the db
-conn = sqlite3.connect('user_credentials.db')
-cursor = conn.cursor()
 
 
 @app.route('/login', methods=['POST'])
