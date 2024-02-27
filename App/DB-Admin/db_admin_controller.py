@@ -50,7 +50,7 @@ cursor = conn.cursor()
 """
 
 
-#check is user exists
+#check if user exists
 def user_exists(username):
     # Check if the user already exists in the db
     cursor.execute('SELECT username FROM users WHERE username = ?', (username,))
