@@ -5,8 +5,10 @@ from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
 from db_functions import validate_creds, user_exists, log_event
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['JWT_SECRET_KEY'] = 'jwt_secret_key'
 app.config['UPLOADS_DEFAULT_DEST'] = 'uploads'
