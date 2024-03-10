@@ -46,7 +46,7 @@ def upload():
         file_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], filename)
 
         file.save(file_path)
-        log_event(current_user, 'upload', filename, recipient=recipient_username)
+        #log_event(current_user, 'upload', filename, recipient=recipient_username)
 
         return jsonify({'message': 'File uploaded successfully'}), 200
     else:
