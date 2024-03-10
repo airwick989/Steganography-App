@@ -73,6 +73,10 @@ class AES_Steg:
         #converg encrypted message to binary, convert delimiters to binary, add them to the message
         bin_msg = self.to_bin(self.start_delimiter) + self.to_bin(msg) + self.to_bin(self.end_delimiter)
 
+        #Check if image is large enough to embed the binary message
+        if len(bin_msg) > len(img_data)*3:
+            raise ValueError("Message is too large to be embedded in the image. Please choose a larger image or a smaller message.")
+
         bin_msg_index = 0   #Keep track of index in binary message   
         for i in range(len(img_data)):  #Iterate through each pixel
             pixel = list(img_data[i])   #Divide pixel into RGB values
