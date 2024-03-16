@@ -1,10 +1,13 @@
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns with equal width */
-    gap: 1em; /* Gap between grid items */
-  }
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
   
-  .grid-item {
-    padding: 1em;
-  }
+.img-container img {
+    height: 400px !important;
+}
   
+.grid-item {
+    padding: 20px;
+}
