@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const TestServer = () => {
+const Uploader = () => {
   const [photo, setPhoto] = useState(null);
   const [secretsFile, setSecretsFile] = useState(null);
   const [recipient, setRecipient] = useState('');
@@ -89,7 +89,7 @@ const TestServer = () => {
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">Upload Image</span>
-            <span className="label-text-alt">Alt label</span>
+            <span className="label-text-alt">png or jpeg</span>
           </div>
           <input type="file" onChange={e => setPhoto(e.target.files[0])} className="file-input file-input-bordered w-full max-w-xs" />
         </label>
@@ -97,7 +97,7 @@ const TestServer = () => {
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">Upload Secrets File</span>
-            <span className="label-text-alt">Ensure it is named 'secrets.txt'</span>
+            <span className="label-text-alt">txt</span>
           </div>
           <input type="file" onChange={e => setSecretsFile(e.target.files[0])} className="file-input file-input-bordered w-full max-w-xs" />
         </label>
@@ -120,4 +120,4 @@ const TestServer = () => {
   );
 };
 
-export default TestServer;
+export default Uploader;
