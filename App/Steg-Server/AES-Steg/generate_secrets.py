@@ -22,16 +22,13 @@ def generate_random_delimiters(length):
     return (start_delimiter, end_delimiter)
 
 
-#Generate secrets file
-if len(sys.argv) == 1:
-    PATH = "secrets.txt"    #Default filename is not argument passed
-else:
-    PATH = str(sys.argv[1]) #filename passed as argument by user
-#Write contents to secrets file
-with open(PATH, "w+") as file:
-    file.write(f"{str(generate_aes_key())}\n")
-    file.write(f"{str(generate_random_iv())}\n")
 
-    delimiters = generate_random_delimiters(DELIMITER_LENGTH)
-    file.write(f"{delimiters[0]}\n")
-    file.write(delimiters[1])
+def generate_secrets(path):
+    #Write contents to secrets file
+    with open(path, "w+") as file:
+        file.write(f"{str(generate_aes_key())}\n")
+        file.write(f"{str(generate_random_iv())}\n")
+
+        delimiters = generate_random_delimiters(DELIMITER_LENGTH)
+        file.write(f"{delimiters[0]}\n")
+        file.write(delimiters[1])

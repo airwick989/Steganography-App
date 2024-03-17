@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 from werkzeug.utils import secure_filename
@@ -6,6 +6,7 @@ import os
 from datetime import datetime
 from db_functions import validate_creds, user_exists, log_event
 from flask_cors import CORS
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -58,6 +59,23 @@ def upload():
         return jsonify({'message': 'Files and message uploaded successfully'}), 200
     else:
         return jsonify({'message': 'Invalid request files or recipient not found'}), 400
+    
+
+@app.route('/getsecrets', methods=['GET'])
+@jwt_required()
+def getSecrets():
+    current_user = get_jwt_identity()
+    url = 'http://localhost:5001/gensecrets'
+    response = requests.get(url)
+    path = './temp_store/secrets.txt'
+
+    if response.status_code == 200:
+        with open(path, 'wb') as f:
+            f.write(response.content)
+        return send_file(path, as_attachment=True), 200
+    else:
+        return "Internal Server Error", 400
+
 
 
 if __name__ == '__main__':

@@ -13,6 +13,41 @@ const Home = () => {
 
     console.log(accessToken)
 
+    const getSecrets = () => {
+
+        console.log(accessToken)
+        const secrets_url = 'http://localhost:5000/getsecrets'
+        const headers = {
+            Authorization: `Bearer ${accessToken}`
+        };
+
+        fetch(secrets_url, { headers })
+        .then(response => {
+            if (!response.ok) {
+            throw new Error(`Failed to download secrets, please log in again to refresh authorization`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            // Create a link element
+            const link = document.createElement('a');
+            link.href = url;
+            // Specify the filename
+            link.setAttribute('download', 'secrets.txt');
+            // Simulate click on the link to trigger download
+            document.body.appendChild(link);
+            link.click();
+            // Remove the link element
+            link.parentNode.removeChild(link);
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+
+    };
+
   return (
     <div className="grid-container" style={{marginTop: '20em', marginBottom: '2em'}}>
 
@@ -23,7 +58,7 @@ const Home = () => {
                 <h2 className="card-title">Generate Secrets</h2>
                 <p>Generate and download a secrets file to your local machine.</p>
                 <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Generate</button>
+                    <button className="btn btn-primary" onClick={getSecrets}>Generate</button>
                 </div>
                 </div>
             </div>
