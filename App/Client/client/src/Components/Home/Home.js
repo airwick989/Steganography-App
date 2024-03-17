@@ -5,17 +5,16 @@ import send from '../../assets/send.jpg';
 import secrets from '../../assets/secrets.png';
 import receive from '../../assets/receive.png';
 import decode from '../../assets/decode.png';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   
     const cookies = new Cookies();
     const accessToken = cookies.get('access_token')
+    const navigate = useNavigate();
 
-    console.log(accessToken)
 
     const getSecrets = () => {
-
-        console.log(accessToken)
         const secrets_url = 'http://localhost:5000/getsecrets'
         const headers = {
             Authorization: `Bearer ${accessToken}`
@@ -48,6 +47,7 @@ const Home = () => {
 
     };
 
+
   return (
     <div className="grid-container" style={{marginTop: '20em', marginBottom: '2em'}}>
 
@@ -71,7 +71,7 @@ const Home = () => {
                 <h2 className="card-title">Send Message</h2>
                 <p>Encrypt and send a message to a specified user.</p>
                 <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Write Message</button>
+                    <button className="btn btn-primary" onClick={() => navigate('/upload')}>Write Message</button>
                 </div>
                 </div>
             </div>

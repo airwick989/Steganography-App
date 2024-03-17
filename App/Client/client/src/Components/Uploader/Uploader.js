@@ -1,36 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import Cookies from "universal-cookie";
+import './Uploader.css';
 
 const Uploader = () => {
   const [photo, setPhoto] = useState(null);
   const [secretsFile, setSecretsFile] = useState(null);
   const [recipient, setRecipient] = useState('');
   const [message, setMessage] = useState('');
-  const [accessToken, setAccessToken] = useState('');
+  
+  const cookies = new Cookies();
+  const accessToken = cookies.get('access_token')
 
-  useEffect(() => {
-    const login_url = 'http://localhost:5000/login';
-    const user_credentials = { username: 'user1', password: 'password1' };
+  // useEffect(() => {
+  //   const login_url = 'http://localhost:5000/login';
+  //   const user_credentials = { username: 'user1', password: 'password1' };
 
-    fetch(login_url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(user_credentials),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.access_token) {
-          setAccessToken(data.access_token);
-          console.log(`Successfully logged in. Access Token: ${data.access_token}\n`);
-        } else {
-          console.log(`Login failed. ${JSON.stringify(data)}\n`);
-        }
-      })
-      .catch(error => {
-        console.error('Error during login:', error);
-      });
-  }, []); // Empty dependency array to mimic componentDidMount
+  //   fetch(login_url, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(user_credentials),
+  //   })
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       if (data.access_token) {
+  //         setAccessToken(data.access_token);
+  //         console.log(`Successfully logged in. Access Token: ${data.access_token}\n`);
+  //       } else {
+  //         console.log(`Login failed. ${JSON.stringify(data)}\n`);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.error('Error during login:', error);
+  //     });
+  // }, []); // Empty dependency array to mimic componentDidMount
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -86,6 +90,7 @@ const Uploader = () => {
     <div>
       <form onSubmit={handleSubmit}>
 
+        <h1 className="text-5xl font-bold" style={{marginBottom: '1em'}}>Send Encrypted Message</h1>
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">Upload Image</span>

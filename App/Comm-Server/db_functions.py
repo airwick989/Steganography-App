@@ -28,9 +28,9 @@ def validate_creds(username, password):
     return False
 
 
-def log_event(user, action, filename, sender=None, recipient=None):
+def log_event(username, action, filename, sender=None, recipient=None):
     cursor.execute('''
-        INSERT INTO events (user, action, filename, sender, recipient)
+        INSERT INTO events (username, action, filename, sender, recipient)
         VALUES (?, ?, ?, ?, ?)
-    ''', (user, action, filename, sender, recipient))
+    ''', (username, action, filename, sender, recipient))
     conn.commit()

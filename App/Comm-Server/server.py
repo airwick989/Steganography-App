@@ -7,6 +7,7 @@ from datetime import datetime
 from db_functions import validate_creds, user_exists, log_event
 from flask_cors import CORS
 import requests
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -14,6 +15,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['JWT_SECRET_KEY'] = 'jwt_secret_key'
 app.config['UPLOADS_DEFAULT_DEST'] = 'uploads_image'
 app.config['UPLOADS_SECRET_DEST'] = 'uploads_secret'
+app.config['IMAGE_STORE'] = 'image_store'
 app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/uploads/'
 
 jwt = JWTManager(app)
@@ -39,24 +41,65 @@ def login():
 def upload():
     current_user = get_jwt_identity()
     recipient = request.form.get('recipient')
+    message = request.form.get('message')
 
     if not user_exists(recipient):
         return jsonify({'message': 'Recipient user does not exist'}), 400
 
     if 'photo' in request.files and 'secretsFile' in request.files:
+
+        for image in os.listdir(app.config['UPLOADS_DEFAULT_DEST']):
+            image_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], image)
+            os.remove(image_path)
+        for secret in os.listdir(app.config['UPLOADS_SECRET_DEST']):
+            secret_path = os.path.join(app.config['UPLOADS_SECRET_DEST'], secret)
+            os.remove(secret_path)
+
         file = request.files['photo']
         filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], filename)
-        file.save(file_path)
+        image_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], filename)
+        file.save(image_path)
 
         file = request.files['secretsFile']
         filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOADS_SECRET_DEST'], filename)
-        file.save(file_path)
+        secret_path = os.path.join(app.config['UPLOADS_SECRET_DEST'], filename)
+        file.save(secret_path)
 
-        #log_event(current_user, 'upload', filename, recipient=recipient_username)
+        url = 'http://localhost:5001/encrypt'
+        files = {
+            'photo': open(image_path, 'rb'), 
+            'secretsFile': open(secret_path, 'rb') 
+        }
+        data = {
+            'message': message
+        }
+        # Send the POST request
+        response = requests.post(url, files=files, data=data)
+        # Check the response status
+        if response.status_code == 200:
+            # Obtain the filename from the 'content-disposition' header
+            content_disposition = response.headers.get('content-disposition')
+            if content_disposition:
+                filename_start = content_disposition.find('filename=') + len('filename=')
+                filename_end = content_disposition.find(';', filename_start)
+                if filename_end == -1:
+                    filename_end = None
+                filename = content_disposition[filename_start:filename_end].strip('"')
+                # Extract the file extension using os.path.splitext()
+                _, file_extension = os.path.splitext(filename)
 
-        return jsonify({'message': 'Files and message uploaded successfully'}), 200
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S").replace(" ", "_").replace(":", "_")
+            path = f"{app.config['IMAGE_STORE']}/{recipient}_{timestamp}.{file_extension}"
+            with open(path, 'wb') as f:
+                f.write(response.content)
+
+            log_event(current_user, 'send', path, recipient=recipient)
+
+            print('Files uploaded successfully')
+            return jsonify({'message': 'Message transmitted successfully'}), 200
+        else:
+            print('Error:', response.text)
+            return jsonify({'message': response.text}), 400
     else:
         return jsonify({'message': 'Invalid request files or recipient not found'}), 400
     

@@ -2,9 +2,8 @@
 - ChatGPT reference for flask app: Secure Flask Server File Transfer
 - ChatGPT reference for AES-Steganography: Python DES Encryption
 - --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-- Last completed login and get secrets with steg server. Next work on sending message, so just modify the uploader component
-a bit and get it to log events in the db, I don't think we need table for user_images cause we can just check the names of the
-images in the python files (make sure to make that modification in the uploader component as well)
+- Last completed upload and event loggin functionality. Next is to work on downloading, BUT BEFORE THAT, see how you can
+fix the accessToken expiring issue.
 
 - Make steg server with functionalities to take input text, secrets file, and image and ...
 uploads an encoded image (name is exact timestamp.png or .jeg) to the Comm-Server (store it in a folder called uploads?)
