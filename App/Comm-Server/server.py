@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, send_file
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, create_refresh_token
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 from werkzeug.utils import secure_filename
 import os
@@ -31,9 +31,18 @@ def login():
 
     if validate_creds(username, password):
         access_token = create_access_token(identity=username)
-        return jsonify(access_token=access_token), 200
+        refresh_token = create_refresh_token(identity=username)
+        return jsonify(access_token=access_token, refresh_token=refresh_token), 200
 
     return jsonify({'message': 'Invalid credentials'}), 401
+
+
+@app.route('/refreshtoken', methods=['POST'])
+@jwt_required(refresh=True)
+def refreshtoken():
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+    return jsonify(access_token=access_token), 200
 
 
 @app.route('/upload', methods=['POST'])
@@ -107,7 +116,6 @@ def upload():
 @app.route('/getsecrets', methods=['GET'])
 @jwt_required()
 def getSecrets():
-    current_user = get_jwt_identity()
     url = 'http://localhost:5001/gensecrets'
     response = requests.get(url)
     path = './temp_store/secrets.txt'

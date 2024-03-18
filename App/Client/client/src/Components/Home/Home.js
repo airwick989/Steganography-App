@@ -6,16 +6,30 @@ import secrets from '../../assets/secrets.png';
 import receive from '../../assets/receive.png';
 import decode from '../../assets/decode.png';
 import { useNavigate } from 'react-router-dom';
+import { checkRefresh } from "../AuthHelper/AuthHelper";
 
 const Home = () => {
   
     const cookies = new Cookies();
-    const accessToken = cookies.get('access_token')
+    var accessToken = cookies.get('access_token')
+    const refreshToken = cookies.get('refresh_token')
     const navigate = useNavigate();
 
 
-    const getSecrets = () => {
+    async function getSecrets(){
         const secrets_url = 'http://localhost:5000/getsecrets'
+
+        const newTokenPromise = checkRefresh(accessToken, refreshToken);
+        console.log(`OLD: ${accessToken}`);
+        const newToken = await newTokenPromise;
+        console.log(`NEWTOKEN: ${newToken}`);
+        if (newToken != null){
+            accessToken = newToken;
+            cookies.set('access_token', accessToken, { path: '/' });
+        };
+
+        console.log(`NEW: ${accessToken}`);
+        
         const headers = {
             Authorization: `Bearer ${accessToken}`
         };
@@ -23,7 +37,7 @@ const Home = () => {
         fetch(secrets_url, { headers })
         .then(response => {
             if (!response.ok) {
-            throw new Error(`Failed to download secrets, please log in again to refresh authorization`);
+            throw new Error(`Failed to download secrets`);
             }
             return response.blob();
         })

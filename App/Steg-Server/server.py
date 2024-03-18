@@ -28,6 +28,7 @@ def genSecrets():
         print("secrets generated")
         return send_file(TEMP_GENERATED_SECRETS_PATH, as_attachment=True), 200
     except Exception:
+        print(Exception)
         return f"Error: {Exception}", 400
     
 

@@ -35,13 +35,12 @@ const Login = () => {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.access_token) {
+        if (data.access_token && data.refresh_token) {
           console.log(`Successfully logged in. Access Token: ${data.access_token}\n`);
 
           // Set the access token as a cookie
-          cookies.set('access_token', data.access_token, {
-            path: '/',
-          });
+          cookies.set('access_token', data.access_token, { path: '/' });
+          cookies.set('refresh_token', data.refresh_token, { path: '/' });
           console.log(`access_token value: ${cookies.get('access_token')}`);
 
           alert("Successfully logged in")
