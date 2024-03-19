@@ -20,15 +20,15 @@ const Home = () => {
         const secrets_url = 'http://localhost:5000/getsecrets'
 
         const newTokenPromise = checkRefresh(accessToken, refreshToken);
-        console.log(`OLD: ${accessToken}`);
+        //console.log(`OLD: ${accessToken}`);
         const newToken = await newTokenPromise;
-        console.log(`NEWTOKEN: ${newToken}`);
+        //console.log(`NEWTOKEN: ${newToken}`);
         if (newToken != null){
             accessToken = newToken;
             cookies.set('access_token', accessToken, { path: '/' });
         };
 
-        console.log(`NEW: ${accessToken}`);
+        //console.log(`NEW: ${accessToken}`);
         
         const headers = {
             Authorization: `Bearer ${accessToken}`
@@ -59,6 +59,47 @@ const Home = () => {
             alert(error.message);
         });
 
+    };
+
+
+    async function getMessages(){
+        const download_url = 'http://localhost:5000/download'
+
+        const newTokenPromise = checkRefresh(accessToken, refreshToken);
+        const newToken = await newTokenPromise;
+        if (newToken != null){
+            accessToken = newToken;
+            cookies.set('access_token', accessToken, { path: '/' });
+        };
+
+        const headers = {
+            Authorization: `Bearer ${accessToken}`
+        };
+
+        fetch(download_url, { headers })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Currently there have been no messages left for you");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            // Create a link element
+            const link = document.createElement('a');
+            link.href = url;
+            // Specify the filename
+            link.setAttribute('download', 'messages.zip');
+            // Simulate click on the link to trigger download
+            document.body.appendChild(link);
+            link.click();
+            // Remove the link element
+            link.parentNode.removeChild(link);
+        })
+        .catch(error => {
+            alert(error.message);
+        });
     };
 
 
@@ -98,7 +139,7 @@ const Home = () => {
                 <h2 className="card-title">Inbox</h2>
                 <p>Check if any encrypted messages have been left for you.</p>
                 <div className="card-actions justify-end">
-                    <button className="btn btn-primary">View</button>
+                    <button className="btn btn-primary" onClick={getMessages}>View</button>
                 </div>
                 </div>
             </div>
@@ -111,7 +152,7 @@ const Home = () => {
                 <h2 className="card-title">Decode</h2>
                 <p>Decode an image to view the embedded message.</p>
                 <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Decode</button>
+                    <button className="btn btn-primary" onClick={() => navigate('/decode')}>Decode</button>
                 </div>
                 </div>
             </div>
