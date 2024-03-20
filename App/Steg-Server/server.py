@@ -15,6 +15,7 @@ CORS(app)
 app.config['UPLOADS_DEFAULT_DEST'] = 'temp_image'
 app.config['UPLOADS_SECRET_DEST'] = 'temp_secrets'
 app.config['OUTPUT_DEST'] = 'output'
+app.config['GEN_SECRET'] = 'temp_gen_secrets'
 #app.config['UPLOADS_DEFAULT_URL'] = 'http://localhost:5000/uploads/'
 
 photos = UploadSet('photos', IMAGES)
@@ -38,12 +39,7 @@ def encrypt():
     secret = request.files['secretsFile']
     plaintext = request.form.get('message')
 
-    for image_file in os.listdir(app.config['UPLOADS_DEFAULT_DEST']):
-        image_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], image_file)
-        os.remove(image_path)
-    for output in os.listdir(app.config['OUTPUT_DEST']):
-        output_path = os.path.join(app.config['OUTPUT_DEST'], output)
-        os.remove(output_path)
+    clearTemps()
 
     image_path = f"{app.config['UPLOADS_DEFAULT_DEST']}/{secure_filename(image.filename)}"
     secret_path = f"{app.config['UPLOADS_SECRET_DEST']}/secrets.txt"
@@ -54,10 +50,46 @@ def encrypt():
 
     try:
         steg = AES_Steg(secret_path)
+        print(plaintext)
         steg.embed(image_path, plaintext, output_path)
         return send_file(output_path, as_attachment=True), 200
     except Exception:
         return f"Error: {Exception}", 400
+    
+
+@app.route('/decrypt', methods=['POST'])
+def decrypt():
+    image = request.files['photo']
+    secret = request.files['secretsFile']
+
+    clearTemps()
+
+    image_path = f"{app.config['UPLOADS_DEFAULT_DEST']}/{secure_filename(image.filename)}"
+    secret_path = f"{app.config['UPLOADS_SECRET_DEST']}/secrets.txt"
+    image.save(image_path)
+    secret.save(secret_path)
+
+    try:
+        steg = AES_Steg(secret_path)
+        message = steg.extract(image_path)
+        return message, 200
+    except Exception:
+        return f"Error: {Exception}", 400
+
+
+def clearTemps():
+    for image_file in os.listdir(app.config['UPLOADS_DEFAULT_DEST']):
+        image_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], image_file)
+        os.remove(image_path)
+    for output in os.listdir(app.config['OUTPUT_DEST']):
+        output_path = os.path.join(app.config['OUTPUT_DEST'], output)
+        os.remove(output_path)
+    for secret_file in os.listdir(app.config['UPLOADS_SECRET_DEST']):
+        secret_path = os.path.join(app.config['UPLOADS_SECRET_DEST'], secret_file)
+        os.remove(secret_path)
+    for gen_secret in os.listdir(app.config['GEN_SECRET']):
+        gen_secret_path = os.path.join(app.config['GEN_SECRET'], gen_secret)
+        os.remove(gen_secret_path)
     
 
 

@@ -104,7 +104,7 @@ const Home = () => {
 
 
   return (
-    <div className="grid-container" style={{marginTop: '20em', marginBottom: '2em'}}>
+    <div className="grid-container" style={{marginTop: '15em', marginBottom: '2em'}}>
 
         <div className="grid-item">
             <div className="card w-96 bg-base-100 shadow-xl image-full">

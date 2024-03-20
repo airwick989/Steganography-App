@@ -110,56 +110,38 @@ def upload():
         return jsonify({'message': 'Invalid request files or recipient not found'}), 400
     
 
-# @app.route('/decode', methods=['POST'])
-# @jwt_required()
-# def decode():
+@app.route('/decode', methods=['POST'])
+@jwt_required()
+def decode():
 
-#     if 'photo' in request.files and 'secretsFile' in request.files:
+    if 'photo' in request.files and 'secretsFile' in request.files:
 
-#         clearUploads()
+        clearUploads()
 
-#         file = request.files['photo']
-#         filename = secure_filename(file.filename)
-#         image_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], filename)
-#         file.save(image_path)
+        file = request.files['photo']
+        filename = secure_filename(file.filename)
+        image_path = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], filename)
+        file.save(image_path)
 
-#         file = request.files['secretsFile']
-#         filename = secure_filename(file.filename)
-#         secret_path = os.path.join(app.config['UPLOADS_SECRET_DEST'], filename)
-#         file.save(secret_path)
+        file = request.files['secretsFile']
+        filename = secure_filename(file.filename)
+        secret_path = os.path.join(app.config['UPLOADS_SECRET_DEST'], filename)
+        file.save(secret_path)
 
-#         url = 'http://localhost:5001/decrypt'
-#         files = {
-#             'photo': open(image_path, 'rb'), 
-#             'secretsFile': open(secret_path, 'rb') 
-#         }
-#         # Send the POST request
-#         response = requests.post(url, files=files)
-#         # Check the response status
-#         if response.status_code == 200:
-#             # Obtain the filename from the 'content-disposition' header
-#             content_disposition = response.headers.get('content-disposition')
-#             if content_disposition:
-#                 filename_start = content_disposition.find('filename=') + len('filename=')
-#                 filename_end = content_disposition.find(';', filename_start)
-#                 if filename_end == -1:
-#                     filename_end = None
-#                 filename = content_disposition[filename_start:filename_end].strip('"')
-#                 # Extract the file extension using os.path.splitext()
-#                 _, file_extension = os.path.splitext(filename)
-
-#             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S").replace(" ", "_").replace(":", "_")
-#             path = f"{app.config['IMAGE_STORE']}/{recipient}_{timestamp}.{file_extension}"
-#             with open(path, 'wb') as f:
-#                 f.write(response.content)
-
-#             log_event(current_user, 'send', path, recipient=recipient)
-
-#             print('Files uploaded successfully')
-#             return jsonify({'message': 'Message transmitted successfully'}), 200
-#         else:
-#             print('Error:', response.text)
-#             return jsonify({'message': response.text}), 400
+        url = 'http://localhost:5001/decrypt'
+        files = {
+            'photo': open(image_path, 'rb'), 
+            'secretsFile': open(secret_path, 'rb') 
+        }
+        # Send the POST request
+        response = requests.post(url, files=files)
+        # Check the response status
+        if response.status_code == 200:
+            message = response.text
+            return jsonify({'message': message}), 200
+        else:
+            print('Error:', response.text)
+            return jsonify({'message': response.text}), 400
     
 
 @app.route('/download', methods=['GET'])

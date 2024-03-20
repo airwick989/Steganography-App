@@ -48,8 +48,8 @@ const Uploader = () => {
     }
 
     // Check if photo is a png or jpeg
-    if (photo && !['image/png', 'image/jpeg'].includes(photo.type)) {
-      alert('Invalid photo format. Please upload a PNG or JPEG file.');
+    if (photo && !['image/png'].includes(photo.type)) {
+      alert('Invalid photo format. Please upload a PNG image file.');
       return;
     }
 
@@ -103,7 +103,7 @@ const Uploader = () => {
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">Upload Image</span>
-            <span className="label-text-alt">png or jpeg</span>
+            <span className="label-text-alt">png</span>
           </div>
           <input type="file" onChange={e => setPhoto(e.target.files[0])} className="file-input file-input-bordered w-full max-w-xs" />
         </label>
