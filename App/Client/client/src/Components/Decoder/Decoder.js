@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Cookies from "universal-cookie";
 import './Decoder.css';
 import { checkRefresh } from '../AuthHelper/AuthHelper';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar';
 
 const Decoder = () => {
   const [photo, setPhoto] = useState(null);
@@ -10,6 +12,13 @@ const Decoder = () => {
   const cookies = new Cookies();
   var accessToken = cookies.get('access_token')
   const refreshToken = cookies.get('refresh_token')
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      if (accessToken === undefined){
+          navigate('/', { replace: true });
+      }
+  }, [accessToken, navigate]);
 
 
   const handleSubmit = async e => {
@@ -64,6 +73,7 @@ const Decoder = () => {
 
   return (
     <div>
+      <Navbar />
       <form onSubmit={handleSubmit}>
 
         <h1 className="text-5xl font-bold" style={{marginBottom: '1em'}}>Decode an Embedded Image</h1>

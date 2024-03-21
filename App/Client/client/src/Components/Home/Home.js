@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Cookies from "universal-cookie";
 import './Home.css';
 import send from '../../assets/send.jpg';
@@ -13,7 +13,24 @@ const Home = () => {
     const cookies = new Cookies();
     var accessToken = cookies.get('access_token')
     const refreshToken = cookies.get('refresh_token')
+    const username = cookies.get('username');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (accessToken === undefined){
+            navigate('/', { replace: true });
+        }
+    }, [accessToken, navigate]);
+
+
+    const logout = () => {
+        const allCookies = cookies.getAll();
+        Object.keys(allCookies).forEach(cookieName => {
+            cookies.remove(cookieName);
+        });
+
+        navigate('/', { replace: true });
+    };
 
 
     async function getSecrets(){
@@ -37,7 +54,7 @@ const Home = () => {
         fetch(secrets_url, { headers })
         .then(response => {
             if (!response.ok) {
-            throw new Error(`Failed to download secrets`);
+            throw new Error(`Failed to download secrets, you are not authenticated`);
             }
             return response.blob();
         })
@@ -104,8 +121,20 @@ const Home = () => {
 
 
   return (
-    <div className="grid-container" style={{marginTop: '15em', marginBottom: '2em'}}>
+    <div className="grid-container" style={{marginTop: '35em', marginBottom: '2em'}}>
 
+        <div className="grid-item double-column" style={{display: 'flex', justifyContent: 'center' }}>
+            <div className="card w-200 bg-base-100 shadow-xl image-full">
+                <div className="card-body">
+                <h2 className="card-title">Hello, {username}!</h2>
+                <p>Welcome to the covert steganography messaging dashboard. Once you're done, <strong>please remember to log out!</strong></p>
+                <div className="card-actions justify-end">
+                    <button className="btn btn-primary" onClick={logout}>Log Out</button>
+                </div>
+                </div>
+            </div>
+        </div>
+        
         <div className="grid-item">
             <div className="card w-96 bg-base-100 shadow-xl image-full">
                 <figure className="img-container"><img src={secrets} alt="?" /></figure>

@@ -9,7 +9,6 @@ const Login = () => {
   const cookies = new Cookies();
   const navigate = useNavigate();
 
-
   const handleSubmit = async e => {
     e.preventDefault();
 
@@ -41,10 +40,10 @@ const Login = () => {
           // Set the access token as a cookie
           cookies.set('access_token', data.access_token, { path: '/' });
           cookies.set('refresh_token', data.refresh_token, { path: '/' });
+          cookies.set('username', user)
           console.log(`access_token value: ${cookies.get('access_token')}`);
 
-          alert("Successfully logged in")
-          navigate('/home')
+          navigate('/home');
         } else {
           console.log(`Login failed. ${JSON.stringify(data)}\n`);
           alert(`Login failed. ${data['message']}\n`);

@@ -1,0 +1,27 @@
+li {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.tooltip-button {
+    position: relative;
+}
+  
+.tooltip-text {
+    visibility: hidden;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+  
+.tooltip-button:hover .tooltip-text {
+    visibility: visible;
+}
+  

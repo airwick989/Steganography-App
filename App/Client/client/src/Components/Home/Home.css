@@ -1,6 +1,6 @@
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
   
@@ -10,4 +10,8 @@
   
 .grid-item {
     padding: 20px;
+}
+
+.double-column {
+    grid-column: 1 / span 2; /* Make the item start at column 1 and span 2 columns */
 }

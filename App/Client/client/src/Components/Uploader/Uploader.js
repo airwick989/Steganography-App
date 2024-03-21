@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Cookies from "universal-cookie";
 import './Uploader.css';
 import { checkRefresh } from '../AuthHelper/AuthHelper';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar';
 
 const Uploader = () => {
   const [photo, setPhoto] = useState(null);
@@ -12,6 +14,13 @@ const Uploader = () => {
   const cookies = new Cookies();
   var accessToken = cookies.get('access_token')
   const refreshToken = cookies.get('refresh_token')
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      if (accessToken === undefined){
+          navigate('/', { replace: true });
+      }
+  }, [accessToken, navigate]);
 
   // useEffect(() => {
   //   const login_url = 'http://localhost:5000/login';
@@ -97,6 +106,7 @@ const Uploader = () => {
 
   return (
     <div>
+      <Navbar/>
       <form onSubmit={handleSubmit}>
 
         <h1 className="text-5xl font-bold" style={{marginBottom: '1em'}}>Send Encrypted Message</h1>
